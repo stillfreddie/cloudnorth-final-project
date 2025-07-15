@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "ami_id" {
   description = "Ubuntu AMI ID for EC2 instances"
   type        = string
-  default     = "ami-053b0d53c279acc90" # Verified Ubuntu 22.04 LTS, us-east-1
+  default     = "ami-0fc5d935ebf8bc3bc" # Verified Ubuntu 22.04 LTS, us-east-1
 }
 
 variable "key_name" {
@@ -64,4 +64,69 @@ variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
   default     = "10.0.0.0/16"
+}
+
+variable "eks_node_group" {
+  description = "Name of the EKS node group"
+  type        = string
+}
+
+variable "eks_node_instance_type" {
+  description = "Instance type for EKS nodes"
+  type        = string
+}
+
+variable "backend_eip_allocation_id" {
+  description = "Elastic IP allocation ID for the backend EC2 instance"
+  type        = string
+}
+
+variable "max_size" {
+  description = "Maximum number of instances in the Auto Scaling Group"
+  type        = number
+}
+
+variable "frontend_eip_allocation_id" {
+  description = "Elastic IP allocation ID for the frontend EC2 instance"
+  type        = string
+}
+
+variable "min_size" {
+  description = "Minimum number of instances in the Auto Scaling Group"
+  type        = number
+}
+
+variable "desired_capacity" {
+  description = "Desired capacity for the Auto Scaling Group"
+  type        = number
+}
+
+variable "eks_cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+}
+
+variable "db_port" {
+  description = "Port number for RDS database"
+  type        = number
+}
+
+variable "frontend_instance_type" {
+  description = "Instance type for frontend EC2"
+  type        = string
+}
+
+variable "backend_instance_type" {
+  description = "Instance type for backend EC2"
+  type        = string
+}
+
+variable "frontend_subnet_cidr" {
+  description = "CIDR block for frontend subnet"
+  type        = string
+}
+
+variable "backend_subnet_cidr" {
+  description = "CIDR block for backend subnet"
+  type        = string
 }
