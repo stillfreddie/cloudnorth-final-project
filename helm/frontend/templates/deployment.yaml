@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudnorth-frontend-deploy
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 2  # match values.yaml replicaCount
+  selector:
+    matchLabels:
+      app: cloudnorth-frontend
+  template:
+    metadata:
+      labels:
+        app: cloudnorth-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: stillfreddie/cloudnorth-frontend:latest  # <-- Update with your image
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: cloudnorth-frontend-config

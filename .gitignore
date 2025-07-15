@@ -1,0 +1,26 @@
+# Secrets & sensitive
+terraform.tfvars
+aws_keys/
+keys/
+*.pem
+*.key
+*.pub
+helm/*/values-secret.yaml
+*.env
+.env
+
+# Terraform state
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# System files
+.DS_Store
+__MACOSX/
+
+# VS Code settings
+.vscode/
+
+# Logs and runtime junk
+*.log
+docker-compose.override.yml

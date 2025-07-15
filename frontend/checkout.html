@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout - CloudNorth</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* Checkout form styling */
+    main {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #007BFF;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 25px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/images/logo.png" alt="CloudNorth Logo" width="120" />
+    <h1>Checkout</h1>
+    <nav>
+  <a href="index.html">Home</a> |
+  <a href="products.html">Products</a> |
+  <a href="cart.html">Cart</a> |
+  <a href="checkout.html">Checkout</a> |
+  <a href="about.html">About</a> |
+  <a href="contact.html">Contact</a>
+</nav>
+  </header>
+
+  <main>
+    <h2>Billing & Shipping Details</h2>
+    <form id="checkoutForm" action="#" method="POST" novalidate>
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" placeholder="John Doe" required />
+      <div class="error" id="fullNameError">Please enter your full name.</div>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="john@example.com" required />
+      <div class="error" id="emailError">Please enter a valid email address.</div>
+
+      <label for="address">Shipping Address</label>
+      <textarea id="address" name="address" rows="3" placeholder="1234 Street Name, City, Country" required></textarea>
+      <div class="error" id="addressError">Please enter your shipping address.</div>
+
+      <label for="paymentMethod">Payment Method</label>
+      <select id="paymentMethod" name="paymentMethod" required>
+        <option value="" disabled selected>Select a payment method</option>
+        <option value="creditCard">Credit Card</option>
+        <option value="paypal">PayPal</option>
+        <option value="bankTransfer">Bank Transfer</option>
+      </select>
+      <div class="error" id="paymentMethodError">Please select a payment method.</div>
+
+      <label for="cardNumber">Card Number</label>
+      <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" />
+      <div class="error" id="cardNumberError">Please enter a valid card number.</div>
+
+      <label for="expiryDate">Expiry Date</label>
+      <input type="month" id="expiryDate" name="expiryDate" />
+      <div class="error" id="expiryDateError">Please enter the card expiry date.</div>
+
+      <label for="cvv">CVV</label>
+      <input type="password" id="cvv" name="cvv" maxlength="4" placeholder="123" />
+      <div class="error" id="cvvError">Please enter the CVV code.</div>
+
+      <button type="submit">Place Order</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CloudNorth. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+
+      // Clear all error messages
+      const errors = document.querySelectorAll('.error');
+      errors.forEach(e => e.style.display = 'none');
+
+      let isValid = true;
+
+      // Full Name validation
+      const fullName = document.getElementById('fullName');
+      if (!fullName.value.trim()) {
+        document.getElementById('fullNameError').style.display = 'block';
+        isValid = false;
+      }
+
+      // Email validation (basic regex)
+      const email = document.getElementById('email');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.value.trim())) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+      }
+
+      // Address validation
+      const address = document.getElementById('address');
+      if (!address.value.trim()) {
+        document.getElementById('addressError').style.display = 'block';
+        isValid = false;
+      }
+
+      // Payment method validation
+      const paymentMethod = document.getElementById('paymentMethod');
+      if (!paymentMethod.value) {
+        document.getElementById('paymentMethodError').style.display = 'block';
+        isValid = false;
+      }
+
+      // Only require card details if payment method is credit card
+      if (paymentMethod.value === 'creditCard') {
+        const cardNumber = document.getElementById('cardNumber');
+        const expiryDate = document.getElementById('expiryDate');
+        const cvv = document.getElementById('cvv');
+
+        const cardPattern = /^\d{13,19}$/; // simple digit-only check for card number
+        if (!cardPattern.test(cardNumber.value.replace(/\s+/g, ''))) {
+          document.getElementById('cardNumberError').style.display = 'block';
+          isValid = false;
+        }
+        if (!expiryDate.value) {
+          document.getElementById('expiryDateError').style.display = 'block';
+          isValid = false;
+        }
+        const cvvPattern = /^\d{3,4}$/;
+        if (!cvvPattern.test(cvv.value)) {
+          document.getElementById('cvvError').style.display = 'block';
+          isValid = false;
+        }
+      }
+
+      if (isValid) {
+        alert('Order placed successfully! Thank you for shopping with CloudNorth.');
+        this.reset();
+      }
+    });
+  </script>
+</body>
+</html>

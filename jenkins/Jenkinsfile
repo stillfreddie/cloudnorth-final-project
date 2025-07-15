@@ -1,0 +1,33 @@
+pipeline {
+  agent any
+  environment {
+    AWS_ACCESS_KEY_ID = credentials('aws-access-key')
+    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Build Docker Images') {
+      steps {
+        script {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+            sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+            sh 'docker build -t stillfreddie/cloudnorth-frontend:latest ./frontend'
+            sh 'docker build -t stillfreddie/cloudnorth-backend:latest ./backend'
+            sh 'docker push stillfreddie/cloudnorth-frontend:latest'
+            sh 'docker push stillfreddie/cloudnorth-backend:latest'
+          }
+        }
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        sh 'helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml'
+        sh 'helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml'
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shopping Cart - CloudNorth</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* Extra styles for cart table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .total-row td {
+      font-weight: bold;
+      background-color: #f1f1f1;
+    }
+
+    .checkout-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .checkout-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/images/logo.png" alt="CloudNorth Logo" width="120" />
+    <h1>Shopping Cart</h1>
+    <nav>
+  <a href="index.html">Home</a> |
+  <a href="products.html">Products</a> |
+  <a href="cart.html">Cart</a> |
+  <a href="checkout.html">Checkout</a> |
+  <a href="about.html">About</a> |
+  <a href="contact.html">Contact</a>
+</nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Your Cart Items</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price (USD)</th>
+            <th>Total (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Wireless Headphones</td><td>2</td><td>$50.00</td><td>$100.00</td></tr>
+          <tr><td>Smart Watch</td><td>1</td><td>$120.00</td><td>$120.00</td></tr>
+          <tr><td>Bluetooth Speaker</td><td>3</td><td>$30.00</td><td>$90.00</td></tr>
+          <tr><td>Gaming Mouse</td><td>1</td><td>$40.00</td><td>$40.00</td></tr>
+          <tr><td>USB-C Charger</td><td>4</td><td>$15.00</td><td>$60.00</td></tr>
+          <tr><td>Fitness Tracker</td><td>1</td><td>$70.00</td><td>$70.00</td></tr>
+          <tr><td>Wireless Keyboard</td><td>2</td><td>$35.00</td><td>$70.00</td></tr>
+          <tr><td>External Hard Drive</td><td>1</td><td>$80.00</td><td>$80.00</td></tr>
+          <tr><td>Smartphone Case</td><td>3</td><td>$12.00</td><td>$36.00</td></tr>
+          <tr><td>Noise Cancelling Earbuds</td><td>2</td><td>$90.00</td><td>$180.00</td></tr>
+          <tr><td>Portable Projector</td><td>1</td><td>$150.00</td><td>$150.00</td></tr>
+          <tr><td>Action Camera</td><td>1</td><td>$200.00</td><td>$200.00</td></tr>
+          <tr><td>LED Desk Lamp</td><td>1</td><td>$45.00</td><td>$45.00</td></tr>
+          <tr class="total-row">
+            <td colspan="3">Grand Total</td>
+            <td>$1241.00</td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="checkout-btn">Proceed to Checkout</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CloudNorth. All rights reserved.</p>
+  </footer>
+</body>
+</html>

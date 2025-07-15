@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudnorth-backend-deploy
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: cloudnorth-backend
+  template:
+    metadata:
+      labels:
+        app: cloudnorth-backend
+    spec:
+      containers:
+        - name: backend
+          image: stillfreddie/cloudnorth-backend:latest  
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "backend.fullname" . }}-secret
+                  key: dbUsername
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "backend.fullname" . }}-secret
+                  key: dbPassword
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "backend.fullname" . }}-secret
+                  key: apiKey
+          envFrom:
+            - configMapRef:
+                name: cloudnorth-backend-config
