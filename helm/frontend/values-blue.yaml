@@ -2,4 +2,4 @@ replicaCount: 2
 
 image:
   repository: stillfreddie/cloudnorth-frontend
-  tag: latest  # <-- Will be dynamically updated by Jenkins during CI/CD
+  tag: phase4.1  # <-- Will be dynamically updated by Jenkins during CI/CD
