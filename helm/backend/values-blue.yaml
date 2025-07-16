@@ -1,3 +1,8 @@
 replicaCount: 2
 image:
   tag: blue
+
+# Add the missing secret values
+dbUsername: "admin"          # <-- EDIT HERE if needed
+dbPassword: "Password1234A"       # <-- EDIT HERE if needed
+apiKey: "test-api-key-xyz"   # <-- EDIT HERE if needed
