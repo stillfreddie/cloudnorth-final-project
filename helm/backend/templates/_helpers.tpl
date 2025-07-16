@@ -1,3 +1,3 @@
 {{- define "backend.fullname" -}}
-{{- printf "%s-%s" .Release.Name "backend" | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-backend" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end }}
