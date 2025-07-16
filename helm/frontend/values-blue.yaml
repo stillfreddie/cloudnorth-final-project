@@ -1,3 +1,5 @@
 replicaCount: 2
+
 image:
-  tag: blue
+  repository: stillfreddie/cloudnorth-frontend
+  tag: latest  # <-- Will be dynamically updated by Jenkins during CI/CD

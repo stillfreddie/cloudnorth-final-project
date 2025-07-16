@@ -4,7 +4,7 @@ metadata:
   name: cloudnorth-frontend-deploy
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 2  # match values.yaml replicaCount
+  replicas: {{ .Values.replicaCount }}  # <-- Controlled from values.yaml
   selector:
     matchLabels:
       app: cloudnorth-frontend
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: stillfreddie/cloudnorth-frontend:latest  # <-- Update with your image
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # <-- Dynamic from values.yaml
           ports:
             - containerPort: 80
           envFrom:
