@@ -2,11 +2,14 @@ pipeline {
   agent any
 
   environment {
+    // Add Go binary directory to PATH manually
+    PATH = "/usr/local/go/bin:$PATH"
     AWS_ACCESS_KEY_ID = credentials('aws-access-key')
     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
   }
 
   stages {
+
     stage('Checkout') {
       steps {
         checkout scm
@@ -19,8 +22,7 @@ pipeline {
           echo "Running Golang linter..."
           sh '''
             cd backend
-            go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-            $HOME/go/bin/golangci-lint run
+            golangci-lint run
           '''
         }
       }
@@ -41,12 +43,19 @@ pipeline {
     stage('Build Docker Images') {
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-            sh 'docker build -t stillfreddie/cloudnorth-frontend:latest ./frontend'
-            sh 'docker build -t stillfreddie/cloudnorth-backend:latest ./backend'
-            sh 'docker push stillfreddie/cloudnorth-frontend:latest'
-            sh 'docker push stillfreddie/cloudnorth-backend:latest'
+          withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+          )]) {
+            sh '''
+              echo "Logging into DockerHub..."
+              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+              docker build -t stillfreddie/cloudnorth-frontend:latest ./frontend
+              docker build -t stillfreddie/cloudnorth-backend:latest ./backend
+              docker push stillfreddie/cloudnorth-frontend:latest
+              docker push stillfreddie/cloudnorth-backend:latest
+            '''
           }
         }
       }
@@ -54,9 +63,13 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh 'helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml'
-        sh 'helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml'
+        sh '''
+          echo "Deploying Frontend and Backend using Helm..."
+          helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml
+          helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml
+        '''
       }
     }
+
   }
 }
