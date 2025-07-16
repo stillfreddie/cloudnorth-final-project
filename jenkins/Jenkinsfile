@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   environment {
-    // Add Go binary directory to PATH manually
     PATH = "/usr/local/go/bin:$PATH"
     AWS_ACCESS_KEY_ID = credentials('aws-access-key')
     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
@@ -44,7 +43,7 @@ pipeline {
       steps {
         script {
           withCredentials([usernamePassword(
-            credentialsId: 'dockerhub-creds',         // <-- Existing DockerHub credentials ID
+            credentialsId: 'dockerhub-creds',
             usernameVariable: 'DOCKER_USER',
             passwordVariable: 'DOCKER_PASS'
           )]) {
@@ -53,12 +52,12 @@ pipeline {
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
               echo "Building and tagging Docker images..."
-              docker build -t stillfreddie/cloudnorth-frontend:latest ./frontend
-              docker build -t stillfreddie/cloudnorth-backend:latest ./backend
+              docker build -t stillfreddie/cloudnorth-frontend:${BUILD_NUMBER} ./frontend
+              docker build -t stillfreddie/cloudnorth-backend:${BUILD_NUMBER} ./backend
 
               echo "Pushing images to DockerHub..."
-              docker push stillfreddie/cloudnorth-frontend:latest
-              docker push stillfreddie/cloudnorth-backend:latest
+              docker push stillfreddie/cloudnorth-frontend:${BUILD_NUMBER}
+              docker push stillfreddie/cloudnorth-backend:${BUILD_NUMBER}
             '''
           }
         }
@@ -68,16 +67,27 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         script {
-          echo "Deploying Frontend and Backend using Helm..."
+          echo "Deploying Frontend and Backend to EKS using Helm..."
 
           sh '''
-            # Check kubectl context (optional debug)
+            # Check current context (for debugging)
             echo "Current kubectl context:"
-            kubectl config current-context             # <-- EDITED HERE (Optional visibility)
+            kubectl config current-context
 
-            # Apply blue version of Helm deployments
-            helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml
-            helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml
+            # Create namespace if it doesn't exist
+            kubectl get ns cloudnorth-ns || kubectl create ns cloudnorth-ns
+
+            # Deploy frontend
+            helm upgrade --install cloudnorth-frontend ./helm/frontend \
+              -n cloudnorth-ns \
+              --set image.repository=stillfreddie/cloudnorth-frontend \
+              --set image.tag=${BUILD_NUMBER}
+
+            # Deploy backend
+            helm upgrade --install cloudnorth-backend ./helm/backend \
+              -n cloudnorth-ns \
+              --set image.repository=stillfreddie/cloudnorth-backend \
+              --set image.tag=${BUILD_NUMBER}
           '''
         }
       }
@@ -87,10 +97,10 @@ pipeline {
 
   post {
     success {
-      echo "Build, push, and deployment completed successfully!"
+      echo "✅ Build, push, and deployment completed successfully!"
     }
     failure {
-      echo "Build or deployment failed. Please check logs."
+      echo "❌ Build or deployment failed. Please check the Jenkins logs for errors."
     }
-  } // <-- EDITED HERE: Added post block for logging outcomes
+  }
 }
