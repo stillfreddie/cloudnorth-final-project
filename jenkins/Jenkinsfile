@@ -44,15 +44,19 @@ pipeline {
       steps {
         script {
           withCredentials([usernamePassword(
-            credentialsId: 'dockerhub-creds',
+            credentialsId: 'dockerhub-creds',         // <-- Existing DockerHub credentials ID
             usernameVariable: 'DOCKER_USER',
             passwordVariable: 'DOCKER_PASS'
           )]) {
             sh '''
               echo "Logging into DockerHub..."
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+              echo "Building and tagging Docker images..."
               docker build -t stillfreddie/cloudnorth-frontend:latest ./frontend
               docker build -t stillfreddie/cloudnorth-backend:latest ./backend
+
+              echo "Pushing images to DockerHub..."
               docker push stillfreddie/cloudnorth-frontend:latest
               docker push stillfreddie/cloudnorth-backend:latest
             '''
@@ -63,13 +67,30 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh '''
+        script {
           echo "Deploying Frontend and Backend using Helm..."
-          helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml
-          helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml
-        '''
+
+          sh '''
+            # Check kubectl context (optional debug)
+            echo "Current kubectl context:"
+            kubectl config current-context             # <-- EDITED HERE (Optional visibility)
+
+            # Apply blue version of Helm deployments
+            helm upgrade --install cloudnorth-frontend ./helm/frontend -f ./helm/frontend/values-blue.yaml
+            helm upgrade --install cloudnorth-backend ./helm/backend -f ./helm/backend/values-blue.yaml
+          '''
+        }
       }
     }
 
   }
+
+  post {
+    success {
+      echo "Build, push, and deployment completed successfully!"
+    }
+    failure {
+      echo "Build or deployment failed. Please check logs."
+    }
+  } // <-- EDITED HERE: Added post block for logging outcomes
 }
