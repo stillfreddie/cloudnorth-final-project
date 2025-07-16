@@ -18,7 +18,7 @@ pipeline {
     stage('Code Quality - Linting') {
       steps {
         script {
-          echo "Running Golang linter..."
+          echo "🔍 Running Golang linter..."
           sh '''
             cd backend
             golangci-lint run
@@ -30,7 +30,7 @@ pipeline {
     stage('Run Unit Tests') {
       steps {
         script {
-          echo "Running Go Unit Tests..."
+          echo "🧪 Running Go Unit Tests..."
           sh '''
             cd backend
             go test ./...
@@ -48,14 +48,14 @@ pipeline {
             passwordVariable: 'DOCKER_PASS'
           )]) {
             sh '''
-              echo "Logging into DockerHub..."
+              echo "🔐 Logging into DockerHub..."
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
-              echo "Building and tagging Docker images..."
+              echo "🐳 Building Docker images..."
               docker build -t stillfreddie/cloudnorth-frontend:${BUILD_NUMBER} ./frontend
               docker build -t stillfreddie/cloudnorth-backend:${BUILD_NUMBER} ./backend
 
-              echo "Pushing images to DockerHub..."
+              echo "📦 Pushing Docker images to DockerHub..."
               docker push stillfreddie/cloudnorth-frontend:${BUILD_NUMBER}
               docker push stillfreddie/cloudnorth-backend:${BUILD_NUMBER}
             '''
@@ -67,23 +67,22 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         script {
-          echo "Deploying Frontend and Backend to EKS using Helm..."
+          echo "🚀 Deploying to EKS using Helm..."
 
           sh '''
-            # Check current context (for debugging)
-            echo "Current kubectl context:"
+            echo "🔧 Checking current kubectl context..."
             kubectl config current-context
 
-            # Create namespace if it doesn't exist
+            echo "🔎 Ensuring namespace exists..."
             kubectl get ns cloudnorth-ns || kubectl create ns cloudnorth-ns
 
-            # Deploy frontend
+            echo "📦 Deploying Frontend..."
             helm upgrade --install cloudnorth-frontend ./helm/frontend \
               -n cloudnorth-ns \
               --set image.repository=stillfreddie/cloudnorth-frontend \
               --set image.tag=${BUILD_NUMBER}
 
-            # Deploy backend
+            echo "📦 Deploying Backend..."
             helm upgrade --install cloudnorth-backend ./helm/backend \
               -n cloudnorth-ns \
               --set image.repository=stillfreddie/cloudnorth-backend \
