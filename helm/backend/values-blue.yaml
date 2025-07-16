@@ -2,17 +2,17 @@ replicaCount: 2
 
 image:
   repository: stillfreddie/cloudnorth-backend
-  tag: blue  # <-- EDIT HERE: update this to match the correct image tag (e.g., 1, 2, green, etc.)
-  pullPolicy: IfNotPresent
+  tag: phase4.1  # <-- EDIT HERE: update this if needed
+  pullPolicy: Always
 
 service:
   type: ClusterIP
   port: 80
 
 # Secret values for database and API
-dbUsername: "admin"             # <-- EDIT HERE: change if using a different DB user
-dbPassword: "Password1234A"     # <-- EDIT HERE: use a secure password in real deployment
-apiKey: "test-api-key-xyz"      # <-- EDIT HERE: replace with actual API key if needed
+dbUsername: admin               # <-- EDIT HERE: update if needed
+dbPassword: Password1234A       # <-- EDIT HERE: use a secure password in real deployment
+apiKey: test-api-key-xyz        # <-- EDIT HERE: replace with actual API key if needed
 
 resources: {}
 nodeSelector: {}
