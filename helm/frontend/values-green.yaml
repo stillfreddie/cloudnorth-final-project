@@ -6,6 +6,7 @@ image:
   pullPolicy: Always
 
 service:
+  name: cloudnorth-frontend-green-svc
   type: ClusterIP
   port: 80
 
@@ -13,3 +14,7 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+configmap:
+  enabled: true
+  name: cloudnorth-frontend-config-green  # <-- Unique name for green

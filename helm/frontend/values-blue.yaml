@@ -6,6 +6,7 @@ image:
   pullPolicy: Always
 
 service:
+  name: cloudnorth-frontend-green-svc
   type: ClusterIP
   port: 80
 
