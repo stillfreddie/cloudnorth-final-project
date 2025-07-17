@@ -1,3 +1,18 @@
 replicaCount: 2
+
 image:
-  tag: green
+  repository: stillfreddie/cloudnorth-backend
+  tag: phase4.1  # <-- KEEP SAME if green = exact same version; change only if you've built a new green image
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+# Reference an existing Kubernetes Secret for dbUsername, dbPassword, and apiKey
+existingSecret: cloudnorth-backend-green-secret   # <-- EDIT HERE: matches your actual green secret name
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

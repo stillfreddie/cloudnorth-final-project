@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: cloudnorth-backend-hpa
+  name: {{ .Release.Name }}-hpa  # <-- Dynamic name per release (e.g., backend-green-hpa)
   namespace: {{ .Release.Namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: cloudnorth-backend-deploy
+    name: {{ .Release.Name }}-deploy  # <-- Targets the dynamically named deployment
   minReplicas: 2
   maxReplicas: 5
   metrics:
@@ -16,4 +16,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 50  # <-- CPU threshold for scaling

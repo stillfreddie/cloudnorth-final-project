@@ -2,4 +2,14 @@ replicaCount: 2
 
 image:
   repository: stillfreddie/cloudnorth-frontend
-  tag: phase4.1  # <-- Will be dynamically updated by Jenkins during CI/CD
+  tag: phase4.1  # <-- KEEP SAME for blue and green unless you're testing a new version
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
