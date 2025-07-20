@@ -1,39 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudnorth-backend-deploy
+  name: {{ .Release.Name }}-deploy  # <-- Dynamic name per release
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 2  
+  replicas: {{ .Values.replicaCount }}  # <-- From values.yaml
   selector:
     matchLabels:
-      app: cloudnorth-backend
+      app: {{ .Release.Name }}  # <-- Matches service selector
   template:
     metadata:
       labels:
-        app: cloudnorth-backend
+        app: {{ .Release.Name }}  # <-- Unique per release
     spec:
       containers:
         - name: backend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
-          env:
-            - name: DB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "backend.fullname" . }}-secret
-                  key: dbUsername
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "backend.fullname" . }}-secret
-                  key: dbPassword
-            - name: API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "backend.fullname" . }}-secret
-                  key: apiKey
           envFrom:
-            - configMapRef:
-                name: cloudnorth-backend-config
+            - secretRef:
+                name: {{ .Values.existingSecret | quote }}  # <-- Uses values.yaml: existingSecret 
