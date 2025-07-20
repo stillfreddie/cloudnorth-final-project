@@ -21,4 +21,4 @@ spec:
             - containerPort: 8080
           envFrom:
             - secretRef:
-                name: {{ .Values.existingSecret | quote }}  # <-- Uses values.yaml: existingSecret 
+                name: {{ .Values.existingSecret | quote }}  # <-- Uses values.yaml: existingSecret

@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: cloudnorth-frontend-hpa
+  name: cloudnorth-frontend-green-hpa
   namespace: {{ .Release.Namespace }}
 spec:
   scaleTargetRef:
