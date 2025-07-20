@@ -4,11 +4,14 @@ metadata:
   name: cloudnorth-frontend-green-ingress
   namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/group.name: cloudnorth-frontend
 spec:
+  ingressClassName: alb  # ✅ Required for AWS ALB Controller
   rules:
-    - host: frontend.cloudnorth.example.com  # <-- EDIT with your real domain
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
