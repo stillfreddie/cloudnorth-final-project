@@ -87,7 +87,8 @@ pipeline {
               -n cloudnorth-ns \
               -f ./helm/backend/values-blue.yaml \
               --set image.repository=stillfreddie/cloudnorth-backend \
-              --set image.tag=${BUILD_NUMBER}
+              --set image.tag="${BUILD_NUMBER}"
+        
           '''
         }
       }
