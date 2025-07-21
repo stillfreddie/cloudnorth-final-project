@@ -85,6 +85,7 @@ pipeline {
             echo "📦 Deploying Backend..."
             helm upgrade --install cloudnorth-backend ./helm/backend \
               -n cloudnorth-ns \
+              -f ./helm/backend/values-blue.yaml \
               --set image.repository=stillfreddie/cloudnorth-backend \
               --set image.tag=${BUILD_NUMBER}
           '''
