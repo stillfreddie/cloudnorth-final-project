@@ -1,13 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-ingress  # <-- dynamic name
+  name: {{ .Release.Name }}-ingress  # <-- Dynamic name like 'frontend-ingress'
   namespace: {{ .Release.Namespace }}
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/group.name: cloudnorth-frontend
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/group.name: cloudnorth-frontend  # <-- One ALB group for all future phases
+    alb.ingress.kubernetes.io/healthcheck-path: /              # <-- Health check for ALB targets
 spec:
   ingressClassName: alb
   rules:
@@ -17,6 +19,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.service.name }}  # <-- dynamic switch here
+                name: {{ .Values.service.name }}  # <-- Dynamic service switch (blue/green/canary)
                 port:
                   number: {{ .Values.service.port }}
