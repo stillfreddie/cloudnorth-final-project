@@ -20,6 +20,7 @@ affinity: {}
 
 configmap:
   enabled: true
-  name: cloudnorth-frontend-config-green  # <-- Unique name for green
+<<<<<<< HEAD
+  name: cloudnorth-frontend-config-green   # <-- NEW unique name  # <-- Unique name for green
 
 configName: cloudnorth-frontend-config-green
