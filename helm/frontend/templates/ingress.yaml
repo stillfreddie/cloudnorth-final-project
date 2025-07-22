@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cloudnorth-frontend-green-ingress
+  name: {{ .Release.Name }}-ingress  # <-- dynamic name
   namespace: {{ .Release.Namespace }}
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -9,7 +9,7 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     alb.ingress.kubernetes.io/group.name: cloudnorth-frontend
 spec:
-  ingressClassName: alb  # ✅ Required for AWS ALB Controller
+  ingressClassName: alb
   rules:
     - http:
         paths:
@@ -17,6 +17,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: cloudnorth-frontend-green-svc
+                name: {{ .Values.service.name }}  # <-- dynamic switch here
                 port:
-                  number: 80
+                  number: {{ .Values.service.port }}

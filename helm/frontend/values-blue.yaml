@@ -2,11 +2,14 @@ replicaCount: 2
 
 image:
   repository: stillfreddie/cloudnorth-frontend
-  tag: phase4.1  # <-- KEEP SAME for blue and green unless you're testing a new version
+  tag: phase4.1  # <-- Same tag for blue and green
   pullPolicy: Always
 
+deployment:
+  name: cloudnorth-frontend-blue-deploy  # <-- MANDATORY for HPA to know which deployment to scale
+
 service:
-  name: cloudnorth-frontend-green-svc
+  name: cloudnorth-frontend-blue-svc  # <-- Unique blue service name
   type: ClusterIP
   port: 80
 
@@ -14,3 +17,7 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+configmap:
+  enabled: true
+  name: cloudnorth-frontend-config  # <-- Blue config name (original name, totally fine)

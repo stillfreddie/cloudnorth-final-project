@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudnorth-frontend-green-deploy
-  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.deployment.name }}            # <-- dynamic deployment name
+  namespace: {{ .Release.Namespace }}            # <-- auto-handled by Helm release
 spec:
-  replicas: {{ .Values.replicaCount }}  # <-- Controlled from values.yaml
+  replicas: {{ .Values.replicaCount }}           # <-- controlled from values file
   selector:
     matchLabels:
       app: cloudnorth-frontend
@@ -15,9 +15,14 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # <-- Dynamic from values.yaml
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"   # <-- dynamic image & tag
           ports:
             - containerPort: 80
           envFrom:
             - configMapRef:
-                name: cloudnorth-frontend-config
+                name: {{ .Values.configmap.name }}   # <-- dynamic configmap
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "500m"

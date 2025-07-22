@@ -5,6 +5,9 @@ image:
   tag: phase4.1  # <-- KEEP SAME for blue and green unless you're testing a new version
   pullPolicy: Always
 
+deployment:
+  name: cloudnorth-frontend-green-deploy
+
 service:
   name: cloudnorth-frontend-green-svc
   type: ClusterIP
