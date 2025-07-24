@@ -23,3 +23,8 @@ configmap:
   name: cloudnorth-frontend-config  # <-- Blue config name (original name, totally fine)
 
 configName: cloudnorth-frontend-config-blue
+
+color: blue
+
+env:
+  BACKEND_URL: http://cloudnorth-backend-blue-svc

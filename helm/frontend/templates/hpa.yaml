@@ -1,15 +1,17 @@
+{{- if eq .Values.color "blue" }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: cloudnorth-frontend-blue-hpa  # <-- EDITED
+  name: cloudnorth-frontend-blue-hpa
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: cloudnorth-frontend-blue  # <-- OPTIONAL for tracking
+    app.kubernetes.io/name: cloudnorth-frontend-blue  # Keep for tracking
+    color: blue                                        # Added to match values.yaml
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: cloudnorth-frontend-blue-deploy  # <-- EDITED
+    name: cloudnorth-frontend-blue-deploy
   minReplicas: 2
   maxReplicas: 5
   metrics:
@@ -19,3 +21,4 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
+{{- end }}
