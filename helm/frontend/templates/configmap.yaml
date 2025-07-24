@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configName }}  # <-- dynamic name from values file
+  name: {{ .Values.configName }}
   namespace: {{ .Release.Namespace }}
 data:
+  BACKEND_URL: {{ .Values.env.BACKEND_URL | quote }}
   THEME_COLOR: "#007BFF"
   WELCOME_MESSAGE: "Welcome to CloudNorth!"
   FEATURE_FLAG_NEW_UI: "enabled"

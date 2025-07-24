@@ -1,15 +1,13 @@
-replicaCount: 2
-
 image:
   repository: stillfreddie/cloudnorth-frontend
-  tag: phase4.1  # <-- KEEP SAME for blue and green unless you're testing a new version
+  tag: phase4.1
   pullPolicy: Always
 
 deployment:
-  name: cloudnorth-frontend-green-deploy
+  name: cloudnorth-frontend-green-deploy-v2
 
 service:
-  name: cloudnorth-frontend-green-svc
+  name: cloudnorth-frontend-green-svc-v2
   type: ClusterIP
   port: 80
 
@@ -20,7 +18,12 @@ affinity: {}
 
 configmap:
   enabled: true
-<<<<<<< HEAD
-  name: cloudnorth-frontend-config-green   # <-- NEW unique name  # <-- Unique name for green
+  name: cloudnorth-frontend-config-green-v2
 
-configName: cloudnorth-frontend-config-green
+configName: cloudnorth-frontend-config-green-v2
+
+color: green
+
+# This section only makes sense if you're templating a ConfigMap file via Helm
+env:
+  BACKEND_URL: http://cloudnorth-backend-green-svc
