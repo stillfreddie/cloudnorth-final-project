@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cloudnorth-grafana-datasource
+  namespace: monitoring  # <-- Added to ensure the ConfigMap lands in the monitoring namespace
 data:
   datasource.yaml: |-
     apiVersion: 1
@@ -9,6 +10,6 @@ data:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://prometheus-server.monitoring.svc.cluster.local
+        url: http://cloudnorth-prometheus.monitoring.svc.cluster.local
         isDefault: true
         editable: false

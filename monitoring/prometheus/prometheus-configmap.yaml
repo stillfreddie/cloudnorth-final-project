@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cloudnorth-prometheus-config
+  namespace: monitoring  # <-- ✅ Ensure this namespace is declared
 data:
   prometheus.yml: |-
     global:
@@ -9,10 +10,17 @@ data:
       evaluation_interval: 15s
 
     scrape_configs:
+      # Prometheus scrapes itself
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
 
+      # Node Exporter via service (newly added)
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['node-exporter.monitoring.svc.cluster.local:9100']  # <-- ✅ Scrape via service
+
+      # Node Exporter on Kubernetes nodes (via kube SD)
       - job_name: 'kubernetes-nodes'
         kubernetes_sd_configs:
           - role: node
@@ -22,6 +30,7 @@ data:
             replacement: '${1}:9100'
             target_label: __address__
 
+      # Scrape pods that expose metrics and are annotated for Prometheus
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
           - role: pod

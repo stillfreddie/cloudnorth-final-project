@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudnorth-grafana
+  namespace: monitoring  # <-- Added this line to ensure it's deployed in the correct namespace
 spec:
   replicas: 1
   selector:
@@ -17,6 +18,9 @@ spec:
           image: grafana/grafana:9.4.0
           ports:
             - containerPort: 3000
+          env:
+            - name: GF_SERVER_HTTP_ADDR
+              value: "0.0.0.0"
           volumeMounts:
             - name: grafana-datasource
               mountPath: /etc/grafana/provisioning/datasources

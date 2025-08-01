@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-exporter
+  namespace: monitoring  # <-- ✅ Ensure this matches your deployment namespace
+  labels:
+    app: node-exporter
+spec:
+  selector:
+    app: node-exporter  # <-- ✅ Must match the label on your Node Exporter pods
+  ports:
+    - port: 9100
+      targetPort: 9100
+      protocol: TCP
