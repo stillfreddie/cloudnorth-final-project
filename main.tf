@@ -12,8 +12,10 @@ terraform {
 }
 
 module "vpc" {
-  source   = "./modules/vpc"
-  vpc_cidr = var.vpc_cidr
+  source               = "./modules/vpc"
+  vpc_cidr             = var.vpc_cidr
+  frontend_subnet_cidr = var.frontend_subnet_cidr
+  backend_subnet_cidr  = var.backend_subnet_cidr
 }
 
 module "sg" {

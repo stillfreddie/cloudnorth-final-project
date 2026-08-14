@@ -2,16 +2,16 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: cloudnorth-frontend-green-hpa
+  name: {{ .Values.deployment.name }}-hpa
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: cloudnorth-frontend-green  # Keep this for Helm tracking
-    color: green                                        # Aligns with values-green.yaml
+    app.kubernetes.io/name: cloudnorth-frontend
+    color: {{ .Values.color }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: cloudnorth-frontend-green-deploy-v2  # MUST match green deployment
+    name: {{ .Values.deployment.name }}
   minReplicas: 2
   maxReplicas: 5
   metrics:

@@ -121,16 +121,16 @@ resource "aws_security_group" "eks_sg" {
 
   # Allow Prometheus NodePort traffic
   ingress {
-    from_port   = 9090
-    to_port     = 9090
+    from_port   = 31930
+    to_port     = 31930
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Allow Grafana NodePort traffic
   ingress {
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = 31909
+    to_port     = 31909
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
