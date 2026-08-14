@@ -2,20 +2,22 @@ replicaCount: 2
 
 image:
   repository: stillfreddie/cloudnorth-backend
-  tag: phase4.1                 # <-- EDIT HERE: update this if needed
+  tag: phase4.1
   pullPolicy: Always
 
+deployment:
+  name: cloudnorth-backend-blue-deploy
+
 service:
+  name: cloudnorth-backend-blue-svc
   type: ClusterIP
   port: 80
 
-# Reference to an existing Kubernetes Secret
-existingSecret: cloudnorth-backend-secret   # <-- EDIT HERE: use cloudnorth-backend-green-secret for green deployment
+color: blue
+
+existingSecret: cloudnorth-backend-secret
 
 resources: {}
-
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}

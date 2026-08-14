@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cloudnorth-backend-green-ingress
+  name: {{ .Release.Name }}-ingress
   namespace: {{ .Release.Namespace }}
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     alb.ingress.kubernetes.io/group.name: cloudnorth-backend
-    alb.ingress.kubernetes.io/healthcheck-path: /api/health  # <-- EDIT if health endpoint differs
+    alb.ingress.kubernetes.io/healthcheck-path: /
 spec:
   ingressClassName: alb
   rules:
@@ -18,6 +18,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "backend.fullname" . }}-green-svc  # ✅ uses Helm naming
+                name: {{ .Values.service.name }}
                 port:
-                  number: 80
+                  number: {{ .Values.service.port }}

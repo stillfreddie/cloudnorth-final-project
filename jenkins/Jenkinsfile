@@ -18,7 +18,7 @@ pipeline {
     stage('Code Quality - Linting') {
       steps {
         script {
-          echo "🔍 Running Golang linter..."
+          echo "Running Golang linter..."
           sh '''
             cd backend
             golangci-lint run
@@ -30,7 +30,7 @@ pipeline {
     stage('Run Unit Tests') {
       steps {
         script {
-          echo "🧪 Running Go Unit Tests..."
+          echo "Running Go Unit Tests..."
           sh '''
             cd backend
             go test ./...
@@ -48,14 +48,14 @@ pipeline {
             passwordVariable: 'DOCKER_PASS'
           )]) {
             sh '''
-              echo "🔐 Logging into DockerHub..."
+              echo "Logging into DockerHub..."
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
-              echo "🐳 Building Docker images..."
+              echo "Building Docker images..."
               docker build -t stillfreddie/cloudnorth-frontend:${BUILD_NUMBER} ./frontend
               docker build -t stillfreddie/cloudnorth-backend:${BUILD_NUMBER} ./backend
 
-              echo "📦 Pushing Docker images to DockerHub..."
+              echo "Pushing Docker images to DockerHub..."
               docker push stillfreddie/cloudnorth-frontend:${BUILD_NUMBER}
               docker push stillfreddie/cloudnorth-backend:${BUILD_NUMBER}
             '''
@@ -64,32 +64,29 @@ pipeline {
       }
     }
 
-    stage('Deploy to Kubernetes') {
+    stage('Deploy Blue to Kubernetes') {
       steps {
         script {
-          echo "🚀 Deploying to EKS using Helm..."
+          echo "Deploying Blue environment to EKS using Helm..."
 
           sh '''
-            echo "🔧 Checking current kubectl context..."
+            echo "Checking current kubectl context..."
             kubectl config current-context
 
-            echo "🔎 Ensuring namespace exists..."
+            echo "Ensuring namespace exists..."
             kubectl get ns cloudnorth-ns || kubectl create ns cloudnorth-ns
 
-            echo "📦 Deploying Frontend..."
+            echo "Deploying Frontend Blue..."
             helm upgrade --install frontend-blue ./helm/frontend \
               -n cloudnorth-ns \
               -f ./helm/frontend/values-blue.yaml \
-              --set image.repository=stillfreddie/cloudnorth-frontend \
               --set image.tag=${BUILD_NUMBER}
 
-            echo "📦 Deploying Backend..."
-            helm upgrade --install cloudnorth-backend ./helm/backend \
+            echo "Deploying Backend Blue..."
+            helm upgrade --install backend-blue ./helm/backend \
               -n cloudnorth-ns \
               -f ./helm/backend/values-blue.yaml \
-              --set image.repository=stillfreddie/cloudnorth-backend \
-              --set image.tag="${BUILD_NUMBER}"
-        
+              --set image.tag=${BUILD_NUMBER}
           '''
         }
       }
@@ -99,10 +96,10 @@ pipeline {
 
   post {
     success {
-      echo "✅ Build, push, and deployment completed successfully!"
+      echo "Build, push, and deployment completed successfully!"
     }
     failure {
-      echo "❌ Build or deployment failed. Please check the Jenkins logs for errors."
+      echo "Build or deployment failed. Please check the Jenkins logs for errors."
     }
   }
 }
