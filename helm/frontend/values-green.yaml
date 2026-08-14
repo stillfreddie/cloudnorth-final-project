@@ -1,3 +1,5 @@
+replicaCount: 2
+
 image:
   repository: stillfreddie/cloudnorth-frontend
   tag: phase4.1

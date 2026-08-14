@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deploy  # <-- Dynamic name per release
+  name: {{ .Values.deployment.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}  # <-- From values.yaml
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}  # <-- Matches service selector
+      app: cloudnorth-backend
+      color: {{ .Values.color }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}  # <-- Unique per release
+        app: cloudnorth-backend
+        color: {{ .Values.color }}
     spec:
       containers:
         - name: backend
@@ -21,4 +23,4 @@ spec:
             - containerPort: 8080
           envFrom:
             - secretRef:
-                name: {{ .Values.existingSecret | quote }}  # <-- Uses values.yaml: existingSecret
+                name: {{ .Values.existingSecret | quote }}
