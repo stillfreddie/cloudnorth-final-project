@@ -1,11 +1,10 @@
-{{- if eq .Values.color "blue" }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Values.deployment.name }}-hpa
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: cloudnorth-frontend
+    app.kubernetes.io/name: {{ .Values.deployment.name }}
     color: {{ .Values.color }}
 spec:
   scaleTargetRef:
@@ -21,4 +20,3 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
-{{- end }}
